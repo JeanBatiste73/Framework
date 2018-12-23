@@ -92,6 +92,9 @@ if (LIFE_SETTINGS(getNumber,"pump_service") isEqualTo 1) then {
     [] execVM "core\fn_setupStationService.sqf";
 };
 
+life_fnc_RequestClientId = player;
+publicVariableServer "life_fnc_RequestClientId"; 
+
 {
     _x params [["_chan",-1,[0]], ["_noText","false",[""]], ["_noVoice","false",[""]]];
 
