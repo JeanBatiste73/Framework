@@ -46,23 +46,21 @@ waitUntil {life_session_completed};
 
 [] spawn life_fnc_escInterupt;
 
-_handle = switch (playerSide) do {
+switch (playerSide) do {
     case west: {
         life_paycheck = LIFE_SETTINGS(getNumber,"paycheck_cop");
-        [] spawn life_fnc_initCop;
+        [] call life_fnc_initCop;
     };
     case civilian: {
         life_paycheck = LIFE_SETTINGS(getNumber,"paycheck_civ");
-        [] spawn life_fnc_initCiv;
+        [] call life_fnc_initCiv;
     };
     case independent: {
         life_paycheck = LIFE_SETTINGS(getNumber,"paycheck_med");
-        [] spawn life_fnc_initMedic;
+        [] call life_fnc_initMedic;
     };
 };
-
 CONSTVAR(life_paycheck);
-waitUntil {scriptDone _handle};
 
 player setVariable ["restrained", false, true];
 player setVariable ["Escorting", false, true];
@@ -73,7 +71,6 @@ player setVariable ["realname", profileName, true];
 diag_log "[Life Client] Past Settings Init";
 [] execFSM "core\fsm\client.fsm";
 diag_log "[Life Client] Executing client.fsm";
-
 
 (findDisplay 46) displayAddEventHandler ["KeyDown", "_this call life_fnc_keyHandler"];
 [player, life_settings_enableSidechannel, playerSide] remoteExecCall ["TON_fnc_manageSC", RSERV];
@@ -91,8 +88,8 @@ diag_log "[Life Client] Executing client.fsm";
     };
 };
 
-addMissionEventHandler ["EachFrame", "life_fnc_playerTags"];
-addMissionEventHandler ["EachFrame", "life_fnc_revealObjects"];
+addMissionEventHandler ["EachFrame", life_fnc_playerTags];
+addMissionEventHandler ["EachFrame", life_fnc_revealObjects];
 
 if (LIFE_SETTINGS(getNumber,"enable_fatigue") isEqualTo 0) then {player enableFatigue false;};
 if (LIFE_SETTINGS(getNumber,"pump_service") isEqualTo 1) then {
