@@ -2,7 +2,6 @@
 /*
     File: init.sqf
     Author: Bryan "Tonic" Boardwine
-    Edited by : Jean-Baptiste
     Description:
     Master client initialization file
 */
@@ -14,7 +13,7 @@ diag_log "----------------------------------------------------------------------
 0 cutText[localize "STR_Init_ClientSetup","BLACK FADED",99999999];
 _timeStamp = diag_tickTime;
 
-waitUntil {!(isNull player) && !(isNull (findDisplay 46))};
+waitUntil {!isNull (findDisplay 46)};
 [] call compile preprocessFileLineNumbers "core\clientValidator.sqf";
 enableSentences false;
 
@@ -76,7 +75,7 @@ diag_log "[Life Client] Past Settings Init";
 diag_log "[Life Client] Executing client.fsm";
 
 
-(findDisplay 46) displayAddEventHandler ["KeyDown", "_this call life_fnc_keyHandler"];};
+(findDisplay 46) displayAddEventHandler ["KeyDown", "_this call life_fnc_keyHandler"];
 [player, life_settings_enableSidechannel, playerSide] remoteExecCall ["TON_fnc_manageSC", RSERV];
 
 [] call life_fnc_hudSetup;
@@ -84,8 +83,16 @@ diag_log "[Life Client] Executing client.fsm";
 
 0 cutText ["","BLACK IN"];
 
-addMissionEventHandler ["EachFrame", {[] spawn life_fnc_playerTags}];
-addMissionEventHandler ["EachFrame", {[] spawn life_fnc_revealObjects}];
+[] spawn {
+    for "_i" from 0 to 1 step 0 do {
+        waitUntil {(!isNull (findDisplay 49)) && {(!isNull (findDisplay 602))}}; // Check if Inventory and ESC dialogs are open
+        (findDisplay 49) closeDisplay 2; // Close ESC dialog
+        (findDisplay 602) closeDisplay 2; // Close Inventory dialog
+    };
+};
+
+addMissionEventHandler ["EachFrame", "life_fnc_playerTags"];
+addMissionEventHandler ["EachFrame", "life_fnc_revealObjects"];
 
 if (LIFE_SETTINGS(getNumber,"enable_fatigue") isEqualTo 0) then {player enableFatigue false;};
 if (LIFE_SETTINGS(getNumber,"pump_service") isEqualTo 1) then {
@@ -95,6 +102,11 @@ if (LIFE_SETTINGS(getNumber,"pump_service") isEqualTo 1) then {
 life_fnc_RequestClientId = player;
 publicVariableServer "life_fnc_RequestClientId"; 
 
+/*
+    https://feedback.bistudio.com/T117205 - disableChannels settings cease to work when leaving/rejoining mission
+    Universal workaround for usage in a preInit function. - AgentRev
+    Remove if Bohemia actually fixes the issue.
+*/
 {
     _x params [["_chan",-1,[0]], ["_noText","false",[""]], ["_noVoice","false",[""]]];
 
