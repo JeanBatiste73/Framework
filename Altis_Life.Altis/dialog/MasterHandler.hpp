@@ -8,7 +8,6 @@
 #include "key_chain.hpp"
 #include "impound.hpp"
 #include "bank.hpp"
-#include "veh_shop.hpp"
 #include "shops.hpp"
 #include "hud_stats.hpp"
 #include "admin_menu.hpp"
