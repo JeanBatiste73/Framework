@@ -9023,6 +9023,10 @@
             <Portuguese>Você comprou %1 por R$%2</Portuguese>
             <Polish>Kupiłeś %1 za $%2</Polish>
         </Key>
+        <Key ID="STR_Shop_Veh_Rent">
+            <Original>You rent a %1 for $%2</Original>
+            <French>Vous avez loué un %1 pour $%2</French>
+        </Key>
         <Key ID="STR_Shop_Veh_UI_Rental">
             <Original>Rental Price:</Original>
             <Czech>Pronájem Cena:</Czech>
